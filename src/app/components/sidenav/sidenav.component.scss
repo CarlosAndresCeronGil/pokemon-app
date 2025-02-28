@@ -1,0 +1,17 @@
+nav {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    background-color: #303030;
+}
+
+li {
+    list-style-type: none;
+    padding: 10px;
+    cursor: pointer;
+    a {
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+    }
+}

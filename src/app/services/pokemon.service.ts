@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
-import { GetPokemonsResponse } from '../models/Pokemon/getPokemonsResponse';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { Pokemon } from '../models/Pokemon/getPokemonsResponse';
+import { BaseResponse } from '../models/Base/baseResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class PokemonService {
   getPokemons(
     offset: number = 0,
     limit: number = 20
-  ): Observable<GetPokemonsResponse> {
-    return this.http.get<GetPokemonsResponse>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
+  ): Observable<BaseResponse<Pokemon>> {
+    return this.http.get<BaseResponse<Pokemon>>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
   }
 }

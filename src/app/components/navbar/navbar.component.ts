@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, output } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -13,9 +12,13 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  toggleSidenav = output();
 
   constructor(
-    private route: ActivatedRoute,
   ) { }
+
+  handleToggleSidenav(): void {
+    this.toggleSidenav.emit();
+  }
 
 }
