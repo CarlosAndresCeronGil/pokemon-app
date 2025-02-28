@@ -1,0 +1,12 @@
+<div class="pokemon-list-title">
+    <h1>Pokemon list</h1>
+</div>
+<div class="pokemon-list-container">
+    @for (pokemon of list_of_pokemons; track pokemon.name) {
+        <app-pokemon-card [pokemon]="pokemon"></app-pokemon-card>
+    }
+</div>
+<div>
+    <button mat-raised-button [disabled]="previous_is_null" (click)="previousPokemons()">Previous</button>
+    <button mat-raised-button [disabled]="next_is_null" (click)="nextPokemons()">Next</button>
+</div>
