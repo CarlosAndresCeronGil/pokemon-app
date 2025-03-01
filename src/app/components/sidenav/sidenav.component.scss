@@ -1,7 +1,7 @@
 nav {
     display: flex;
     justify-content: center;
-    height: 100vh;
+    height: calc(100vh - 56px);
     background-color: #303030;
 }
 

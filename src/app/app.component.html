@@ -1,13 +1,15 @@
-<mat-sidenav-container>
-  <mat-sidenav #sidenav class="mat-sidenav-container" mode="side" opened="true">
-    <app-sidenav></app-sidenav>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <header>
-      <app-navbar (toggleSidenav)="sidenav.toggle()"></app-navbar>
-    </header>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="general-container">
+  <header>
+    <app-navbar (toggleSidenav)="sidenav.toggle()"></app-navbar>
+  </header>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav mode="over" opened="true">
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

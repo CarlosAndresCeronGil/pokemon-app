@@ -1,8 +1,9 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>{{ pokemon().name }}</mat-card-title>
+        <mat-card-title>{{ fullPokemonInfo()?.name }}</mat-card-title>
     </mat-card-header>
+    <img mat-card-image [src]="fullPokemonInfo()?.sprites?.front_default" alt="Photo of {{ fullPokemonInfo()?.name }}">
     <mat-card-actions>
-        <button mat-button>DETAILS</button>
+        <button mat-button (click)="handleSeeDetails()">DETAILS</button>
     </mat-card-actions>
 </mat-card>
