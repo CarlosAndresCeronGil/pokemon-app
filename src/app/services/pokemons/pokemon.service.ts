@@ -1,24 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, mergeMap, Observable, switchMap } from 'rxjs';
-import { Pokemon } from '../models/Pokemon/getPokemonsResponse';
-import { BaseResponse } from '../models/Base/baseResponse';
-import { GetSinglePokemonResponse } from '../models/Pokemon/getSinglePokemonResponse';
+import { BehaviorSubject, delay, Observable, switchMap, tap } from 'rxjs';
+import { Pokemon } from '../../models/Pokemon/getPokemonsResponse';
+import { BaseResponse } from '../../models/Base/baseResponse';
+import { GetSinglePokemonResponse } from '../../models/Pokemon/getSinglePokemonResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PokemonService {
+  private pokemonListLoading = signal<boolean>(false);
+  private pokemonDetailLoading = signal<boolean>(false);
+
   private pokemonsOffsetLimit = new BehaviorSubject<{ offset: number, limit: number }>({ offset: 0, limit: 10 });
   pokemonsOffsetLimit$ = this.pokemonsOffsetLimit.asObservable();
 
   selectedPokemonDetail = signal<GetSinglePokemonResponse | undefined>(this.getPersistantPokemonDetail());
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   pokemons$ = this.pokemonsOffsetLimit$.pipe(
+    tap(() => this.pokemonListLoading.set(true)),
     switchMap(({ offset, limit }) => this.getPokemons(offset, limit))
   );
 
@@ -52,10 +56,25 @@ export class PokemonService {
     offset: number = 0,
     limit: number = 10
   ): Observable<BaseResponse<Pokemon>> {
-    return this.http.get<BaseResponse<Pokemon>>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
+    return this.http.get<BaseResponse<Pokemon>>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`)
+      .pipe(
+        tap(() => this.pokemonListLoading.set(false))
+      )
   }
 
   getById(fullUrl: string): Observable<GetSinglePokemonResponse> {
-    return this.http.get<GetSinglePokemonResponse>(fullUrl);
+    this.pokemonDetailLoading.set(true);
+    return this.http.get<GetSinglePokemonResponse>(fullUrl)
+      .pipe(
+        tap(() => this.pokemonDetailLoading.set(false))
+      );
+  }
+
+  get pokemonListIsLoading(): boolean {
+    return this.pokemonListLoading();
+  }
+
+  get pokemonDetailIsLoading(): boolean {
+    return this.pokemonDetailLoading();
   }
 }

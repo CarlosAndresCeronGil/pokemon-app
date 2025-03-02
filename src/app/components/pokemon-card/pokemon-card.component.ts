@@ -2,18 +2,21 @@ import { Component, DestroyRef, input, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../models/Pokemon/getPokemonsResponse';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { PokemonService } from '../../services/pokemon.service';
+import { PokemonService } from '../../services/pokemons/pokemon.service';
 import { GetSinglePokemonResponse } from '../../models/Pokemon/getSinglePokemonResponse';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-pokemon-card',
   imports: [
     MatCardModule,
+    MatProgressSpinnerModule,
     MatButtonModule,
   ],
+  providers: [PokemonService],
   templateUrl: './pokemon-card.component.html',
   styleUrl: './pokemon-card.component.scss'
 })
@@ -23,7 +26,7 @@ export class PokemonCardComponent implements OnInit {
 
   constructor(
     private route: Router,
-    private pokemonService: PokemonService,
+    public pokemonService: PokemonService,
     private destroyRef: DestroyRef
   ) { }
 

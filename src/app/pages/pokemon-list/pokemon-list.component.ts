@@ -1,15 +1,17 @@
 import { Component, DestroyRef, OnInit } from '@angular/core';
 import { Pokemon } from '../../models/Pokemon/getPokemonsResponse';
-import { PokemonService } from '../../services/pokemon.service';
+import { PokemonService } from '../../services/pokemons/pokemon.service';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PokemonCardComponent } from "../../components/pokemon-card/pokemon-card.component";
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-pokemon-list',
   imports: [
     MatButtonModule,
+    MatProgressSpinnerModule,
     PokemonCardComponent
   ],
   templateUrl: './pokemon-list.component.html',
@@ -22,8 +24,8 @@ export class PokemonListComponent implements OnInit {
   previous_is_null: boolean = true;
 
   constructor(
-    private pokemonService: PokemonService,
-    private destroyRef: DestroyRef
+    public pokemonService: PokemonService,
+    private destroyRef: DestroyRef,
   ) { }
 
   ngOnInit(): void {

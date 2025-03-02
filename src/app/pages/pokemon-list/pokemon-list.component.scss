@@ -4,6 +4,12 @@
     margin-bottom: 1rem;
 }
 
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .pokemon-list-container {
     padding: 5PX;
     display: grid;

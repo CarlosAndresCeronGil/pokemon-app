@@ -1,3 +1,10 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 56px);
+}
+
 mat-card {
     background-color: #FFCC66;
     color: white;

@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, WritableSignal } from '@angular/core';
-import { PokemonService } from '../../services/pokemon.service';
+import { Component, OnInit, WritableSignal } from '@angular/core';
+import { PokemonService } from '../../services/pokemons/pokemon.service';
 import { GetSinglePokemonResponse } from '../../models/Pokemon/getSinglePokemonResponse';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +22,6 @@ export class PokemonDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.pokemonDetail = this.pokemonService.selectedPokemonDetail;
-    console.log(`this.pokemonDetail`, this.pokemonDetail());
   }
 
 }
