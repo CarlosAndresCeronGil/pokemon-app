@@ -134,7 +134,7 @@ export type Cries = {
     legacy: string;
 };
 
-export type GetSinglePokemonResponse = {
+export type ApiSinglePokemonResponse = {
     id: number;
     name: string;
     base_experience: number;

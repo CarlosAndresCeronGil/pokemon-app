@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, delay, Observable, switchMap, tap } from 'rxjs';
-import { Pokemon } from '../../models/Pokemon/getPokemonsResponse';
-import { BaseResponse } from '../../models/Base/baseResponse';
-import { GetSinglePokemonResponse } from '../../models/Pokemon/getSinglePokemonResponse';
+import { inject, Injectable, signal } from '@angular/core';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
+import { ApiPokemonShortResponse } from '../../models/Pokemon/apiPokemonsResponse';
+import { apiBaseResponse } from '../../models/Base/apiBaseResponse';
+import { ApiSinglePokemonResponse } from '../../models/Pokemon/apiSinglePokemonResponse';
+import { environment } from '../../../environments/environment';
+import { PokemonDto } from '../../models/Pokemon/pokemonDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -12,61 +14,40 @@ export class PokemonService {
   private pokemonListLoading = signal<boolean>(false);
   private pokemonDetailLoading = signal<boolean>(false);
 
-  private pokemonsOffsetLimit = new BehaviorSubject<{ offset: number, limit: number }>({ offset: 0, limit: 10 });
+  private pokemonsOffsetLimit = new BehaviorSubject<{ offset: number, limit: number }>({ offset: 0, limit: environment.limitItems });
   pokemonsOffsetLimit$ = this.pokemonsOffsetLimit.asObservable();
 
-  selectedPokemonDetail = signal<GetSinglePokemonResponse | undefined>(this.getPersistantPokemonDetail());
-
-  constructor(
-    private http: HttpClient,
-  ) { }
+  http = inject(HttpClient);
 
   pokemons$ = this.pokemonsOffsetLimit$.pipe(
     tap(() => this.pokemonListLoading.set(true)),
     switchMap(({ offset, limit }) => this.getPokemons(offset, limit))
   );
 
-  nextPokemonOffsetLimit(): void {
+  handlePokemonOffsetLimit(isNext: boolean): void {
+    if(!isNext && this.pokemonsOffsetLimit.value.offset === 0) return;
     this.pokemonsOffsetLimit.next({
-      offset: this.pokemonsOffsetLimit.value.offset + 10,
-      limit: 10
+      offset: isNext ? this.pokemonsOffsetLimit.value.offset + environment.limitItems : this.pokemonsOffsetLimit.value.offset - environment.limitItems,
+      limit: environment.limitItems
     });
-  }
-
-  previousPokemonOffsetLimit(): void {
-    if(this.pokemonsOffsetLimit.value.offset === 0) {
-      return;
-    }
-    this.pokemonsOffsetLimit.next({
-      offset: this.pokemonsOffsetLimit.value.offset - 10,
-      limit: 10
-    });
-  }
-
-  getPersistantPokemonDetail(): GetSinglePokemonResponse | undefined {
-    return localStorage.getItem('selectedPokemonDetail') ? JSON.parse(localStorage.getItem('selectedPokemonDetail')!) : undefined;
-  }
-
-  setPersistantPokemonDetail(pokemon: GetSinglePokemonResponse): void {
-    this.selectedPokemonDetail.set(pokemon);
-    localStorage.setItem('selectedPokemonDetail', JSON.stringify(pokemon));
   }
 
   getPokemons(
     offset: number = 0,
-    limit: number = 10
-  ): Observable<BaseResponse<Pokemon>> {
-    return this.http.get<BaseResponse<Pokemon>>(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`)
+    limit: number = environment.limitItems
+  ): Observable<apiBaseResponse<ApiPokemonShortResponse>> {
+    return this.http.get<apiBaseResponse<ApiPokemonShortResponse>>(`${environment.baseUrlApi}/pokemon/?offset=${offset}&limit=${limit}`)
       .pipe(
         tap(() => this.pokemonListLoading.set(false))
       )
   }
 
-  getById(fullUrl: string): Observable<GetSinglePokemonResponse> {
+  getById(fullUrl: string): Observable<ApiSinglePokemonResponse> {
     this.pokemonDetailLoading.set(true);
-    return this.http.get<GetSinglePokemonResponse>(fullUrl)
+    return this.http.get<ApiSinglePokemonResponse>(fullUrl)
       .pipe(
-        tap(() => this.pokemonDetailLoading.set(false))
+        tap(() => this.pokemonDetailLoading.set(false)),
+        map((response) => new PokemonDto(response))
       );
   }
 

@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, DestroyRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, DestroyRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from "./components/navbar/navbar.component";
+import { NavbarComponent } from "./dashboard/layout/navbar/navbar.component";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { SidenavComponent } from './dashboard/layout/sidenav/sidenav.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -26,7 +26,8 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     private observer: BreakpointObserver,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit(): void {
@@ -41,6 +42,7 @@ export class AppComponent implements AfterViewInit {
             this.sidenav.mode = 'side';
             this.sidenav.open();
           }
+          this.cdr.detectChanges();
         }),
         takeUntilDestroyed(this.destroyRef)
       )

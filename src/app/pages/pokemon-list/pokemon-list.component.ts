@@ -1,61 +1,74 @@
-import { Component, DestroyRef, OnInit } from '@angular/core';
-import { Pokemon } from '../../models/Pokemon/getPokemonsResponse';
+import { Component, DestroyRef, inject, Injector, OnInit, Signal } from '@angular/core';
+import { ApiPokemonShortResponse } from '../../models/Pokemon/apiPokemonsResponse';
 import { PokemonService } from '../../services/pokemons/pokemon.service';
-import { tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PokemonCardComponent } from "../../components/pokemon-card/pokemon-card.component";
+import { map, tap } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { PokemonCardComponent } from './pokemon-card/pokemon-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { apiBaseResponse } from '../../models/Base/apiBaseResponse';
 
 @Component({
   selector: 'app-pokemon-list',
-  imports: [
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    PokemonCardComponent
-  ],
+  imports: [MatButtonModule, MatProgressSpinnerModule, PokemonCardComponent],
   templateUrl: './pokemon-list.component.html',
-  styleUrl: './pokemon-list.component.scss'
+  styles: `
+  .pokemon-list-title {
+      text-align: center;
+      margin-bottom: 1rem;
+  }
+
+  .loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .pokemon-list-container {
+      padding: 5PX;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+  }
+  `,
 })
 export class PokemonListComponent implements OnInit {
+  listOfPokemons: ApiPokemonShortResponse[] = [];
+  nextIsNull: boolean = false;
+  previousIsNull: boolean = true;
 
-  list_of_pokemons: Pokemon[] = [];
-  next_is_null: boolean = false;
-  previous_is_null: boolean = true;
+  listOfPokemonsV2!: Signal<ApiPokemonShortResponse[] | undefined>;
 
-  constructor(
-    public pokemonService: PokemonService,
-    private destroyRef: DestroyRef,
-  ) { }
+  pokemonService = inject(PokemonService);
+  destroyRef = inject(DestroyRef);
+  injector = inject(Injector);
 
   ngOnInit(): void {
-    this.pokemonService.pokemons$
-    .pipe(
+    this.listOfPokemonsV2 = toSignal(this.pokemonService.pokemons$.pipe(
       tap((response) => {
-        this.list_of_pokemons = response.results;
-        if(response.previous === null) {
-          this.previous_is_null = true;
+        if (response.previous === null) {
+          this.previousIsNull = true;
         } else {
-          this.previous_is_null = false;
+          this.previousIsNull = false;
         }
 
-        if(response.next === null) {
-          this.next_is_null = true;
+        if (response.next === null) {
+          this.nextIsNull = true;
         } else {
-          this.next_is_null = false;
+          this.nextIsNull = false;
         }
       }),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe();
+      map((response) => response.results),
+    ), {
+      injector: this.injector,
+    })
   }
 
   nextPokemons(): void {
-    this.pokemonService.nextPokemonOffsetLimit();
+    this.pokemonService.handlePokemonOffsetLimit(true);
   }
 
   previousPokemons(): void {
-    this.pokemonService.previousPokemonOffsetLimit();
+    this.pokemonService.handlePokemonOffsetLimit(false);
   }
-
 }

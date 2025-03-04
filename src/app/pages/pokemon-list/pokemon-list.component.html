@@ -7,19 +7,19 @@
 </div>
 } @else {
 <div class="pokemon-list-container">
-  @for (pokemon of list_of_pokemons; track pokemon.name) {
+  @for (pokemon of listOfPokemonsV2(); track pokemon.name) {
   <app-pokemon-card [pokemon]="pokemon"></app-pokemon-card>
   }
 </div>
 <div>
   <button
     mat-raised-button
-    [disabled]="previous_is_null"
+    [disabled]="previousIsNull"
     (click)="previousPokemons()"
   >
     Previous
   </button>
-  <button mat-raised-button [disabled]="next_is_null" (click)="nextPokemons()">
+  <button mat-raised-button [disabled]="nextIsNull" (click)="nextPokemons()">
     Next
   </button>
 </div>

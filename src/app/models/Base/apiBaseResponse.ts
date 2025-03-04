@@ -1,5 +1,5 @@
 
-export type BaseResponse<T> = {
+export type apiBaseResponse<T> = {
     count: number;
     next: string | null;
     previous: string | null;
