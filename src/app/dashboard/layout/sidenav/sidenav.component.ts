@@ -9,7 +9,6 @@ import { RouterModule } from '@angular/router';
       <ul>
         <li><a routerLink="/">Pokemon list</a></li>
         <li><a routerLink="/moves">Moves</a></li>
-        <li><a routerLink="/contact">Games</a></li>
       </ul>
     </nav>
   `,

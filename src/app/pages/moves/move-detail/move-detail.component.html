@@ -1,0 +1,28 @@
+@if (moveDetail()) {
+    <div class="card-container">
+        <mat-card appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>#{{moveDetail()!.id}} - {{moveDetail()!.name}}</mat-card-title>
+                <mat-card-subtitle>Type: {{moveDetail()!.type.name}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <p><strong>Accuracy:</strong> {{moveDetail()!.accuracy}}</p>
+                <p><strong>Power:</strong> {{moveDetail()!.power}}</p>
+                <p><strong>PP:</strong> {{moveDetail()!.pp}}</p>
+                <p><strong>Priority:</strong> {{moveDetail()!.priority}}</p>
+                <p><strong>Damage Class:</strong> {{moveDetail()!.damage_class.name}}</p>
+                <p><strong>Effect:</strong> {{moveDetail()!.effect_entries[0].effect}}</p>
+                <p><strong>Short Effect:</strong> {{moveDetail()!.effect_entries[0].short_effect}}</p>
+                <p><strong>Contest Type:</strong> {{moveDetail()!.contest_type.name}}</p>
+                <p><strong>Generation:</strong> {{moveDetail()!.generation.name}}</p>
+                <p><strong>Learned by Pokémon:</strong></p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+} @else {
+    <mat-card appearance="outlined">
+        <mat-card-content>
+            <p>Select a move to see its details.</p>
+        </mat-card-content>
+    </mat-card>
+}
