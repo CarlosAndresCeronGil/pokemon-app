@@ -20,6 +20,7 @@ import { environment } from '../../../../environments/environment';
   ],
   templateUrl: './pokemon-list.component.html',
   styles: `
+  @import '../../../../styles.scss';
   mat-card {
     display: flex;
     flex-direction: column;
@@ -28,23 +29,17 @@ import { environment } from '../../../../environments/environment';
     margin: 0 auto;
   }
 
-
   .pokemon-list-title {
       text-align: center;
       margin-bottom: 1rem;
   }
 
   .loader {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      @include centered-content;
   }
 
   .pokemon-list-container {
-      padding: 5PX;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
+      @include list-container;
   }
   `,
 })
@@ -57,7 +52,7 @@ export class PokemonListComponent {
   destroyRef = inject(DestroyRef);
   injector = inject(Injector);
 
-  listOfPokemons = toSignal(this.pokemonService.pokemons$.pipe(
+  listOfPokemons = toSignal(this.pokemonService.items$.pipe(
     tap((response) => {
       if (response.previous === null) {
         this.previousIsNull.set(true);
@@ -75,8 +70,8 @@ export class PokemonListComponent {
   ));
 
   searchForAPokemon(): void {
-    this.pokemonService.updatePokemonSearched(this.searchPokemon());
-    this.listOfPokemons = toSignal(this.pokemonService.pokemonSeached$.pipe(
+    this.pokemonService.updateItemSearched(this.searchPokemon());
+    this.listOfPokemons = toSignal(this.pokemonService.itemSearched$.pipe(
       map((response) => [{ name: response.name, url: environment.baseUrlApi + '/pokemon/' + response.id }]),
       catchError(() => of([]))
     ), {
@@ -85,10 +80,10 @@ export class PokemonListComponent {
   }
 
   nextPokemons(): void {
-    this.pokemonService.updatePokemonPagination(true);
+    this.pokemonService.updateItemPagination(true);
   }
 
   previousPokemons(): void {
-    this.pokemonService.updatePokemonPagination(false);
+    this.pokemonService.updateItemPagination(false);
   }
 }

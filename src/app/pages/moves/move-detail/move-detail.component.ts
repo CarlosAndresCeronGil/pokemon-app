@@ -39,7 +39,7 @@ export class MoveDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.fullUrl = `${environment.baseUrlApi}/move/${this.idMove()}`;
-    this.moveDetail = toSignal(this.moveService.getMovieById(this.fullUrl), {
+    this.moveDetail = toSignal(this.moveService.getItemById(this.fullUrl), {
       injector: this.injector,
     });
   }

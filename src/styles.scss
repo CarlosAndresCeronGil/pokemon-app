@@ -16,3 +16,16 @@ html {
 }/* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #303030; color: white;}
+
+@mixin list-container {
+  padding: 5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+@mixin centered-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

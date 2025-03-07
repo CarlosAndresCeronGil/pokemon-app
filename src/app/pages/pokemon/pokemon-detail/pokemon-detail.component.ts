@@ -46,7 +46,7 @@ export class PokemonDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.fullUrl = `${environment.baseUrlApi}/pokemon/${this.idPokemon()}`;
-    this.pokemonDetail = toSignal(this.pokemonService.getById(this.fullUrl), {
+    this.pokemonDetail = toSignal(this.pokemonService.getItemById(this.fullUrl), {
       injector: this.injector,
     });
   }

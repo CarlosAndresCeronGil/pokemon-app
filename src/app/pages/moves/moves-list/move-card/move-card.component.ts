@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-move-card',
   imports: [MatCardModule, MatProgressSpinnerModule, MatButtonModule],
   template: `
-    @if(movesService.movesDetailIsLoading) {
+    @if(movesService.itemDetailIsLoading) {
     <mat-spinner></mat-spinner>
     } @else {
     <mat-card>
@@ -50,7 +50,7 @@ export class MoveCardComponent {
 
   ngOnInit(): void {
     this.fullMoveResponse = toSignal(
-      this.movesService.getMovieById(this.move().url),
+      this.movesService.getItemById(this.move().url),
       {
         injector: this.injector,
       }

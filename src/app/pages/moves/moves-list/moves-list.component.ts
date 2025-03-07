@@ -20,6 +20,7 @@ import { MoveCardComponent } from './move-card/move-card.component';
   ],
   templateUrl: './moves-list.component.html',
   styles: `
+  @import '../../../../styles.scss';
   mat-card {
     display: flex;
     flex-direction: column;
@@ -35,16 +36,11 @@ import { MoveCardComponent } from './move-card/move-card.component';
   }
 
   .loader {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      @include centered-content;
   }
 
   .move-list-container {
-      padding: 5PX;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
+      @include list-container;
   }
   `
 })
@@ -57,7 +53,7 @@ export class MovesListComponent {
   destroyRef = inject(DestroyRef);
   injector = inject(Injector);
 
-  listOfMoves = toSignal(this.movesService.moves$.pipe(
+  listOfMoves = toSignal(this.movesService.items$.pipe(
     tap((response) => {
       if (response.previous === null) {
         this.previousIsNull.set(true);
@@ -69,8 +65,8 @@ export class MovesListComponent {
   ));
 
   searcForhMoves() {
-    this.movesService.updateMoveSearched(this.searchMoves());
-    this.listOfMoves = toSignal(this.movesService.moveSeached$.pipe(
+    this.movesService.updateItemSearched(this.searchMoves());
+    this.listOfMoves = toSignal(this.movesService.itemSearched$.pipe(
       map((response) => [{ name: response.name, url: environment.baseUrlApi + '/move/' + response.id}]),
       catchError(() => of([]))
     ), {
@@ -79,11 +75,11 @@ export class MovesListComponent {
   }
 
   nextMoves() {
-    this.movesService.updateMovePagination(true);
+    this.movesService.updateItemPagination(true);
   }
 
   previousMoves() {
-    this.movesService.updateMovePagination(false);
+    this.movesService.updateItemPagination(false);
   }
 
 }

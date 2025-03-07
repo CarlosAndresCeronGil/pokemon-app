@@ -23,7 +23,7 @@ import { ApiPokemonShortResponse } from '../../../../models/Pokemon/apiPokemonsR
   imports: [MatCardModule, MatProgressSpinnerModule, MatButtonModule],
   providers: [PokemonService],
   template: `
-    @if(pokemonService.pokemonDetailIsLoading) {
+    @if(pokemonService.itemDetailIsLoading) {
     <mat-spinner></mat-spinner>
     } @else {
     <mat-card>
@@ -66,7 +66,7 @@ export class PokemonCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.fullPokemonInfo = toSignal(
-      this.pokemonService.getById(this.pokemon().url),
+      this.pokemonService.getItemById(this.pokemon().url),
       {
         injector: this.injector,
       }

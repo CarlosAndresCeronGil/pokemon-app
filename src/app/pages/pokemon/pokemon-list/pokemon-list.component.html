@@ -10,7 +10,7 @@
     <button mat-button (click)="searchForAPokemon()">Search</button>
   </mat-card-actions>
 </mat-card>
-@if(pokemonService.pokemonListIsLoading) {
+@if(pokemonService.itemListIsLoading) {
 <div class="loader">
   <mat-spinner></mat-spinner>
 </div>
