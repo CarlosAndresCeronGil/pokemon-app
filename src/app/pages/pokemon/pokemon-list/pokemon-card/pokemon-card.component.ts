@@ -8,15 +8,15 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { ApiPokemonShortResponse } from '../../../models/Pokemon/apiPokemonsResponse';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { PokemonService } from '../../../services/pokemons/pokemon.service';
-import { ApiSinglePokemonResponse } from '../../../models/Pokemon/apiSinglePokemonResponse';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PokemonService } from '../../../../services/pokemons/pokemon.service';
+import { ApiSinglePokemonResponse } from '../../../../models/Pokemon/apiSinglePokemonResponse';
+import { ApiPokemonShortResponse } from '../../../../models/Pokemon/apiPokemonsResponse';
 
 @Component({
   selector: 'app-pokemon-card',

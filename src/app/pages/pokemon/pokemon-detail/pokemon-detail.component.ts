@@ -6,12 +6,12 @@ import {
   OnInit,
   Signal,
 } from '@angular/core';
-import { PokemonService } from '../../services/pokemons/pokemon.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { environment } from '../../../environments/environment';
-import { ApiSinglePokemonResponse } from '../../models/Pokemon/apiSinglePokemonResponse';
+import { PokemonService } from '../../../services/pokemons/pokemon.service';
+import { ApiSinglePokemonResponse } from '../../../models/Pokemon/apiSinglePokemonResponse';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-pokemon-detail',
