@@ -1,26 +1,18 @@
 <div class="pokemon-list-title">
   <h1>Pokemon list</h1>
 </div>
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Search a pokemón</mat-card-title>
-  </mat-card-header>
-  <mat-card-actions>
-    <input type="text" [(ngModel)]="searchPokemon" />
-    <button mat-button (click)="searchForAPokemon()">Search</button>
-  </mat-card-actions>
-</mat-card>
-@if(pokemonService.itemListIsLoading) {
+<app-search-bar [title]="'Search a pokemon'" [(searchTerm)]="searchTerm" (searchEvent)="search()"></app-search-bar>
+@if(service.itemListIsLoading) {
 <div class="loader">
   <mat-spinner></mat-spinner>
 </div>
 } @else {
 <div class="pokemon-list-container">
-  @if(listOfPokemons()?.length === 0) {
+  @if(items()?.length === 0) {
   <div class="no-pokemon-found">
     <h2>No pokemons found</h2>
   </div>
-  } @else { @for (pokemon of listOfPokemons(); track pokemon.name) {
+  } @else { @for (pokemon of items(); track pokemon.name) {
   <app-pokemon-card [pokemon]="pokemon"></app-pokemon-card>
   } }
 </div>

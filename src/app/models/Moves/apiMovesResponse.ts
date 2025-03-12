@@ -1,5 +1,3 @@
+import { apiBaseShortResponse } from "../Base/apiBaseResponse";
 
-export type ApiMovesShortResponse = {
-    name: string;
-    url: string;
-}
+export type ApiMovesShortResponse = apiBaseShortResponse;

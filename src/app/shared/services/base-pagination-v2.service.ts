@@ -1,15 +1,23 @@
-import { inject, signal } from '@angular/core';
+import { Inject, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, catchError, Observable, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiBaseResponse } from '../../models/Base/apiBaseResponse';
+import { BASE_ITEM_NAME } from '../tokens/injection-tokens';
+import { IBaseService } from '../../models/Base/baseService';
+import { itemName } from '../../models/Base/itemName';
+@Injectable()
 // ASHR = API SINGLE SHORT RESPONSE
 // ASIR = API SINGLE ITEM RESPONSE
-export abstract class BasePaginationService<ASHR, ASIR> {
-  protected abstract baseItemName: string;
+export class BasePaginationServiceV2<ASHR, ASIR> implements IBaseService<ASHR, ASIR> {
+  baseItemName: string
 
   itemListLoading = signal<boolean>(false);
   itemDetailLoading = signal<boolean>(false);
+
+  constructor(@Inject(BASE_ITEM_NAME) baseItemName: itemName) {
+    this.baseItemName = baseItemName;
+  }
 
   private itemPaginationLimit = new BehaviorSubject<{
     offset: number;
@@ -47,7 +55,7 @@ export abstract class BasePaginationService<ASHR, ASIR> {
 
   getItems(
     offset: number = 0,
-    limit: number = environment.limitItems
+    limit: number = environment.limitItems,
   ): Observable<apiBaseResponse<ASHR>> {
     return this.http
       .get<apiBaseResponse<ASHR>>(`${environment.baseUrlApi}/${this.baseItemName}/?offset=${offset}&limit=${limit}`)

@@ -1,7 +1,6 @@
-export type ApiPokemonShortResponse = {
-    name: string;
-    url: string;
-};
+import { apiBaseShortResponse } from "../Base/apiBaseResponse";
+
+export type ApiPokemonShortResponse = apiBaseShortResponse;
 
 export type ApiPokemonsResponse = {
     count: number;

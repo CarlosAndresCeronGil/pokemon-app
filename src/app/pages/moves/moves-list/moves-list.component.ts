@@ -1,5 +1,4 @@
 import { Component, DestroyRef, inject, Injector, signal } from '@angular/core';
-import { MovesService } from '../../../services/moves/moves.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -8,6 +7,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MoveCardComponent } from './move-card/move-card.component';
+import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
+import { BASE_ITEM_NAME, BASE_SERVICE_TOKEN } from '../../../shared/tokens/injection-tokens';
+import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
+import { BaseListComponent } from '../../base/base-list/base-list.component';
+import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-moves-list',
@@ -16,8 +20,10 @@ import { MoveCardComponent } from './move-card/move-card.component';
     MatCardModule,
     MatProgressSpinnerModule,
     FormsModule,
-    MoveCardComponent
+    MoveCardComponent,
+    SearchBarComponent
   ],
+  providers: createBasePaginationProvider('move'),
   templateUrl: './moves-list.component.html',
   styles: `
   @import '../../../../styles.scss';
@@ -44,42 +50,15 @@ import { MoveCardComponent } from './move-card/move-card.component';
   }
   `
 })
-export class MovesListComponent {
-  searchMoves = signal<string>('');
-  nextIsNull = signal<boolean>(false);
-  previousIsNull = signal<boolean>(true);
-
-  movesService = inject(MovesService);
-  destroyRef = inject(DestroyRef);
-  injector = inject(Injector);
-
-  listOfMoves = toSignal(this.movesService.items$.pipe(
-    tap((response) => {
-      if (response.previous === null) {
-        this.previousIsNull.set(true);
-      } else {
-        this.previousIsNull.set(false);
-      }
-    }),
-    map((response) => response.results)
-  ));
-
-  searcForhMoves() {
-    this.movesService.updateItemSearched(this.searchMoves());
-    this.listOfMoves = toSignal(this.movesService.itemSearched$.pipe(
-      map((response) => [{ name: response.name, url: environment.baseUrlApi + '/move/' + response.id}]),
-      catchError(() => of([]))
-    ), {
-      injector: this.injector,
-    });
-  }
+export class MovesListComponent extends BaseListComponent {
+  override itemType = signal<string>('move');
 
   nextMoves() {
-    this.movesService.updateItemPagination(true);
+    super.next();
   }
 
   previousMoves() {
-    this.movesService.updateItemPagination(false);
+    super.previous();
   }
 
 }

@@ -1,14 +1,16 @@
 import { Component, inject, Injector, input, OnInit, Signal } from '@angular/core';
-import { MovesService } from '../../../services/moves/moves.service';
 import { ApiSingleMoveResponse } from '../../../models/Moves/apiSingleMoveResponse';
 import { environment } from '../../../../environments/environment';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
+import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
 
 @Component({
   selector: 'app-move-detail',
   imports: [MatButtonModule, MatCardModule],
+  providers: createBasePaginationProvider('move'),
   templateUrl: './move-detail.component.html',
   styles: `
     .card-container {
@@ -32,14 +34,14 @@ export class MoveDetailComponent implements OnInit {
   idMove = input.required<number>();
   fullUrl!: string;
 
-  moveService = inject(MovesService);
+  paginationService = inject(BasePaginationServiceV2);
   injector = inject(Injector);
 
   moveDetail!: Signal<ApiSingleMoveResponse | undefined>;
 
   ngOnInit(): void {
     this.fullUrl = `${environment.baseUrlApi}/move/${this.idMove()}`;
-    this.moveDetail = toSignal(this.moveService.getItemById(this.fullUrl), {
+    this.moveDetail = toSignal(this.paginationService.getItemById(this.fullUrl), {
       injector: this.injector,
     });
   }

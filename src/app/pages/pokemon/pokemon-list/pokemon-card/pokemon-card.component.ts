@@ -1,6 +1,5 @@
 import {
   Component,
-  DestroyRef,
   inject,
   Injector,
   input,
@@ -11,19 +10,18 @@ import {
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { tap } from 'rxjs';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { PokemonService } from '../../../../services/pokemons/pokemon.service';
 import { ApiSinglePokemonResponse } from '../../../../models/Pokemon/apiSinglePokemonResponse';
 import { ApiPokemonShortResponse } from '../../../../models/Pokemon/apiPokemonsResponse';
+import { BasePaginationServiceV2 } from '../../../../shared/services/base-pagination-v2.service';
 
 @Component({
   selector: 'app-pokemon-card',
   imports: [MatCardModule, MatProgressSpinnerModule, MatButtonModule],
-  providers: [PokemonService],
   template: `
-    @if(pokemonService.itemDetailIsLoading) {
+    @if(loadingData()) {
     <mat-spinner></mat-spinner>
     } @else {
     <mat-card>
@@ -59,14 +57,16 @@ import { ApiPokemonShortResponse } from '../../../../models/Pokemon/apiPokemonsR
 export class PokemonCardComponent implements OnInit {
   pokemon = input.required<ApiPokemonShortResponse>();
   fullPokemonInfo!: Signal<ApiSinglePokemonResponse | undefined>;
+  loadingData = signal<boolean>(false);
 
   route = inject(Router);
-  pokemonService = inject(PokemonService);
+  paginationService = inject(BasePaginationServiceV2);
   injector = inject(Injector);
 
   ngOnInit(): void {
+    this.loadingData.set(true);
     this.fullPokemonInfo = toSignal(
-      this.pokemonService.getItemById(this.pokemon().url),
+      this.paginationService.getItemById(this.pokemon().url).pipe(tap(() => this.loadingData.set(false))),
       {
         injector: this.injector,
       }

@@ -1,18 +1,19 @@
-import { Component, inject, Injector, input, Signal } from '@angular/core';
+import { Component, inject, Injector, input, signal, Signal } from '@angular/core';
 import { ApiMovesShortResponse } from '../../../../models/Moves/apiMovesResponse';
 import { ApiSingleMoveResponse } from '../../../../models/Moves/apiSingleMoveResponse';
 import { Router } from '@angular/router';
-import { MovesService } from '../../../../services/moves/moves.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { BasePaginationServiceV2 } from '../../../../shared/services/base-pagination-v2.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-move-card',
   imports: [MatCardModule, MatProgressSpinnerModule, MatButtonModule],
   template: `
-    @if(movesService.itemDetailIsLoading) {
+    @if(loadingData()) {
     <mat-spinner></mat-spinner>
     } @else {
     <mat-card>
@@ -43,14 +44,16 @@ import { MatButtonModule } from '@angular/material/button';
 export class MoveCardComponent {
   move = input.required<ApiMovesShortResponse>();
   fullMoveResponse!: Signal<ApiSingleMoveResponse | undefined>;
+  loadingData = signal<boolean>(false);
 
   route = inject(Router);
-  movesService = inject(MovesService);
+  paginationService = inject(BasePaginationServiceV2);
   injector = inject(Injector);
 
   ngOnInit(): void {
+    this.loadingData.set(true);
     this.fullMoveResponse = toSignal(
-      this.movesService.getItemById(this.move().url),
+      this.paginationService.getItemById(this.move().url).pipe(tap(() => this.loadingData.set(false))),
       {
         injector: this.injector,
       }

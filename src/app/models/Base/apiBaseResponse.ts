@@ -5,3 +5,13 @@ export type apiBaseResponse<T> = {
     previous: string | null;
     results: T[];
 }
+
+export type apiBaseShortResponse = {
+    name: string;
+    url: string;
+}
+
+export type apiSingleItemResponse = {
+    id: number;
+    name: string;
+}

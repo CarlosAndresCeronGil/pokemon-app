@@ -1,13 +1,12 @@
-import { Component, DestroyRef, inject, Injector, signal } from '@angular/core';
-import { catchError, map, of, tap } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, signal } from '@angular/core';
 import { PokemonCardComponent } from './pokemon-card/pokemon-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { PokemonService } from '../../../services/pokemons/pokemon.service';
-import { environment } from '../../../../environments/environment';
+import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
+import { BaseListComponent } from '../../base/base-list/base-list.component';
+import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -16,8 +15,10 @@ import { environment } from '../../../../environments/environment';
     MatCardModule,
     MatProgressSpinnerModule,
     FormsModule,
-    PokemonCardComponent
+    PokemonCardComponent,
+    SearchBarComponent
   ],
+  providers: createBasePaginationProvider('pokemon'),
   templateUrl: './pokemon-list.component.html',
   styles: `
   @import '../../../../styles.scss';
@@ -43,47 +44,18 @@ import { environment } from '../../../../environments/environment';
   }
   `,
 })
-export class PokemonListComponent {
-  searchPokemon = signal<string>('');
-  nextIsNull = signal<boolean>(false);
-  previousIsNull = signal<boolean>(true);
+export class PokemonListComponent extends BaseListComponent {
+  override itemType = signal<string>('pokemon');
 
-  pokemonService = inject(PokemonService);
-  destroyRef = inject(DestroyRef);
-  injector = inject(Injector);
-
-  listOfPokemons = toSignal(this.pokemonService.items$.pipe(
-    tap((response) => {
-      if (response.previous === null) {
-        this.previousIsNull.set(true);
-      } else {
-        this.previousIsNull.set(false);
-      }
-
-      if (response.next === null) {
-        this.nextIsNull.set(true);
-      } else {
-        this.nextIsNull.set(false);
-      }
-    }),
-    map((response) => response.results),
-  ));
-
-  searchForAPokemon(): void {
-    this.pokemonService.updateItemSearched(this.searchPokemon());
-    this.listOfPokemons = toSignal(this.pokemonService.itemSearched$.pipe(
-      map((response) => [{ name: response.name, url: environment.baseUrlApi + '/pokemon/' + response.id }]),
-      catchError(() => of([]))
-    ), {
-      injector: this.injector
-    });;
-  }
+  // constructor() {
+  //   console.log('instance of service are the same', this.paginationService === this.injector.get(BASE_SERVICE_TOKEN));
+  // }
 
   nextPokemons(): void {
-    this.pokemonService.updateItemPagination(true);
+    super.next();
   }
 
   previousPokemons(): void {
-    this.pokemonService.updateItemPagination(false);
+    super.previous();
   }
 }

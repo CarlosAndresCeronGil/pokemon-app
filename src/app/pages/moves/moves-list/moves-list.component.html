@@ -1,27 +1,18 @@
 <div class="moves-list-title">
   <h1>Moves list</h1>
 </div>
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Search a move</mat-card-title>
-  </mat-card-header>
-  <mat-card-actions>
-    <input type="text" [(ngModel)]="searchMoves" />
-    <button mat-button (click)="searcForhMoves()">Search</button>
-  </mat-card-actions>
-</mat-card>
-@if(movesService.itemListIsLoading) {
-  
+<app-search-bar [title]="'Search a move'" [(searchTerm)]="searchTerm" (searchEvent)="search()"></app-search-bar>
+@if(service.itemListIsLoading) {
 <div class="loader">
   <mat-spinner></mat-spinner>
 </div>
 } @else {
 <div class="move-list-container">
-  @if(listOfMoves()?.length === 0) {
+  @if(items()?.length === 0) {
   <div class="no-moves-found">
     <h2>No moves found</h2>
   </div>
-  } @else { @for (move of listOfMoves(); track move.name) {
+  } @else { @for (move of items(); track move.name) {
   <app-move-card [move]="move"></app-move-card>
   } }
 </div>

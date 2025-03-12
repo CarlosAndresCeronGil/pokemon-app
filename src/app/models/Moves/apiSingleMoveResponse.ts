@@ -1,3 +1,5 @@
+import { apiSingleItemResponse } from "../Base/apiBaseResponse";
+
 export interface ContestCombo {
     use_after: null | any;
     use_before: Array<{
@@ -94,7 +96,7 @@ export interface Type {
     url: string;
 }
 
-export interface ApiSingleMoveResponse {
+export type ApiSingleMoveResponse = apiSingleItemResponse & {
     accuracy: number;
     contest_combos: {
         normal: ContestCombo;
@@ -108,11 +110,9 @@ export interface ApiSingleMoveResponse {
     effect_entries: Array<EffectEntry>;
     flavor_text_entries: Array<FlavorTextEntry>;
     generation: Generation;
-    id: number;
     learned_by_pokemon: Array<LearnedByPokemon>;
     machines: Array<any>;
     meta: Meta;
-    name: string;
     names: Array<Name>;
     past_values: Array<any>;
     power: number;

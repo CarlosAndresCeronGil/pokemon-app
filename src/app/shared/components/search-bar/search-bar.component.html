@@ -1,0 +1,9 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ title() }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions>
+      <input type="text" [(ngModel)]="searchTerm" />
+      <button mat-button (click)="search()">Search</button>
+    </mat-card-actions>
+  </mat-card>

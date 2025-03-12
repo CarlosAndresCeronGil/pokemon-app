@@ -1,3 +1,5 @@
+import { apiSingleItemResponse } from "../Base/apiBaseResponse";
+
 export type Ability = {
     is_hidden: boolean;
     slot: number;
@@ -134,9 +136,7 @@ export type Cries = {
     legacy: string;
 };
 
-export type ApiSinglePokemonResponse = {
-    id: number;
-    name: string;
+export type ApiSinglePokemonResponse = apiSingleItemResponse & {
     base_experience: number;
     height: number;
     is_default: boolean;
