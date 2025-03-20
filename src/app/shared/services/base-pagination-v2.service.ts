@@ -1,21 +1,18 @@
-import { Inject, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, catchError, Observable, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiBaseResponse } from '../../models/Base/apiBaseResponse';
-import { BASE_ITEM_NAME } from '../tokens/injection-tokens';
 import { IBaseService } from '../../models/Base/baseService';
 import { itemName } from '../../models/Base/itemName';
 @Injectable()
-// ASHR = API SINGLE SHORT RESPONSE
 // ASIR = API SINGLE ITEM RESPONSE
-export class BasePaginationServiceV2<ASHR, ASIR> implements IBaseService<ASHR, ASIR> {
-  baseItemName: string
+export class BasePaginationServiceV2<apiSingleItemResponse> implements IBaseService<apiSingleItemResponse> {
+  baseItemName: itemName = 'pokemon';
 
   itemListLoading = signal<boolean>(false);
-  itemDetailLoading = signal<boolean>(false);
 
-  constructor(@Inject(BASE_ITEM_NAME) baseItemName: itemName) {
+  changeBaseItemName(baseItemName: itemName): void {
     this.baseItemName = baseItemName;
   }
 
@@ -36,7 +33,9 @@ export class BasePaginationServiceV2<ASHR, ASIR> implements IBaseService<ASHR, A
 
   itemSearched$ = this.singleItemSearched$.pipe(
     tap(() => this.itemListLoading.set(true)),
-    switchMap((search) => this.searchItem(search))
+    switchMap((search) => {
+      return this.searchItem(search)
+    })
   );
 
   updateItemPagination(isNext: boolean): void {
@@ -56,19 +55,21 @@ export class BasePaginationServiceV2<ASHR, ASIR> implements IBaseService<ASHR, A
   getItems(
     offset: number = 0,
     limit: number = environment.limitItems,
-  ): Observable<apiBaseResponse<ASHR>> {
+  ): Observable<apiBaseResponse> {
     return this.http
-      .get<apiBaseResponse<ASHR>>(`${environment.baseUrlApi}/${this.baseItemName}/?offset=${offset}&limit=${limit}`)
+      .get<apiBaseResponse>(`${environment.baseUrlApi}/${this.baseItemName}/?offset=${offset}&limit=${limit}`)
       .pipe(tap(() => this.itemListLoading.set(false)));
   }
 
   searchItem(
     search: string
-  ): Observable<ASIR> {
+  ): Observable<apiSingleItemResponse> {
     return this.http
-      .get<ASIR>(`${environment.baseUrlApi}/${this.baseItemName}/${search}`)
+      .get<apiSingleItemResponse>(`${environment.baseUrlApi}/${this.baseItemName}/${search}`)
       .pipe(
-        tap(() => this.itemListLoading.set(false)),
+        tap(() => {
+          this.itemListLoading.set(false);
+        }),
         catchError((error) => {
           this.itemListLoading.set(false);
           throw error;
@@ -76,15 +77,13 @@ export class BasePaginationServiceV2<ASHR, ASIR> implements IBaseService<ASHR, A
       )
   }
 
-  getItemById(fullUrl: string): Observable<ASIR> {
-    this.itemDetailLoading.set(true);
-    return this.http.get<ASIR>(fullUrl).pipe(
-      tap(() => this.itemDetailLoading.set(false))
-    )
-  }
-
-  get itemDetailIsLoading(): boolean {
-    return this.itemDetailLoading();
+  getItemById(fullUrl: string): Observable<apiSingleItemResponse> {
+    return this.http.get<apiSingleItemResponse>(fullUrl)
+      .pipe(
+        catchError((error) => {
+          throw error;
+        })
+      );
   }
 
   get itemListIsLoading(): boolean {

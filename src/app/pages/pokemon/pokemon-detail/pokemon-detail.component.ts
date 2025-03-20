@@ -12,18 +12,20 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiSinglePokemonResponse } from '../../../models/Pokemon/apiSinglePokemonResponse';
 import { environment } from '../../../../environments/environment';
 import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
-import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
+import { PokemonService } from '../../../services/pokemon/pokemon.service';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-pokemon-detail',
-  imports: [MatButtonModule, MatCardModule],
-  providers: createBasePaginationProvider('pokemon'),
+  imports: [MatButtonModule, MatCardModule, NgOptimizedImage],
   templateUrl: './pokemon-detail.component.html',
   styles: `
     .card-container {
       display: flex;
       justify-content: center;
       align-items: center;
+      height: calc(100vh - 56px);
+      overflow-y: scroll;
     }
 
     mat-card {
@@ -32,7 +34,13 @@ import { createBasePaginationProvider } from '../../../shared/factories/provider
         margin: 10px;
         width: 400px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+    }
+
+    mat-card-header {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
     }
   `,
 })
@@ -41,6 +49,7 @@ export class PokemonDetailComponent implements OnInit {
   fullUrl!: string;
 
   basePaginationService = inject(BasePaginationServiceV2);
+  pokemonService = inject(PokemonService);
   injector = inject(Injector);
 
   pokemonDetail!: Signal<ApiSinglePokemonResponse | undefined>;

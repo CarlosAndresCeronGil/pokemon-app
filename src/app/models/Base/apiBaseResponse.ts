@@ -1,9 +1,9 @@
 
-export type apiBaseResponse<T> = {
+export type apiBaseResponse = {
     count: number;
     next: string | null;
     previous: string | null;
-    results: T[];
+    results: apiBaseShortResponse[];
 }
 
 export type apiBaseShortResponse = {

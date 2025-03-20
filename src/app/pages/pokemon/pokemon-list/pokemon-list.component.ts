@@ -1,24 +1,30 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
 import { PokemonCardComponent } from './pokemon-card/pokemon-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
 import { BaseListComponent } from '../../base/base-list/base-list.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ApiSinglePokemonResponse, Sprites } from '../../../models/Pokemon/apiSinglePokemonResponse';
+import { PokemonService } from '../../../services/pokemon/pokemon.service';
 
 @Component({
   selector: 'app-pokemon-list',
   imports: [
     MatButtonModule,
     MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     FormsModule,
     PokemonCardComponent,
     SearchBarComponent
   ],
-  providers: createBasePaginationProvider('pokemon'),
   templateUrl: './pokemon-list.component.html',
   styles: `
   @import '../../../../styles.scss';
@@ -35,7 +41,7 @@ import { SearchBarComponent } from '../../../shared/components/search-bar/search
       margin-bottom: 1rem;
   }
 
-  .loader {
+  .loader, .pokemon-list-filter {
       @include centered-content;
   }
 
@@ -44,12 +50,19 @@ import { SearchBarComponent } from '../../../shared/components/search-bar/search
   }
   `,
 })
-export class PokemonListComponent extends BaseListComponent {
+export class PokemonListComponent extends BaseListComponent<ApiSinglePokemonResponse> {
+  public pokemonService = inject(PokemonService);
+  typeOfImagesOptions: any[] = this.pokemonService.POKEMON_IMAGES_OPTIONS;
+
   override itemType = signal<string>('pokemon');
 
-  // constructor() {
-  //   console.log('instance of service are the same', this.paginationService === this.injector.get(BASE_SERVICE_TOKEN));
-  // }
+  protected override changeBaseItemName(): void {
+    this.service.changeBaseItemName('move');
+  }
+
+  changeTypeOfImage(event: any): void {
+    this.pokemonService.currentPokemonImageOption.set(event);
+  }
 
   nextPokemons(): void {
     super.next();

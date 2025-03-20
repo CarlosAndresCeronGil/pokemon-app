@@ -1,17 +1,15 @@
-import { Component, DestroyRef, inject, Injector, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, tap } from 'rxjs';
+import { Component, signal } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MoveCardComponent } from './move-card/move-card.component';
-import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
-import { BASE_ITEM_NAME, BASE_SERVICE_TOKEN } from '../../../shared/tokens/injection-tokens';
-import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
 import { BaseListComponent } from '../../base/base-list/base-list.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
+import { ApiMovesShortResponse } from '../../../models/Moves/apiMovesResponse';
+import { ApiSingleMoveResponse } from '../../../models/Moves/apiSingleMoveResponse';
+import { apiBaseShortResponse } from '../../../models/Base/apiBaseResponse';
 
 @Component({
   selector: 'app-moves-list',
@@ -23,7 +21,6 @@ import { SearchBarComponent } from '../../../shared/components/search-bar/search
     MoveCardComponent,
     SearchBarComponent
   ],
-  providers: createBasePaginationProvider('move'),
   templateUrl: './moves-list.component.html',
   styles: `
   @import '../../../../styles.scss';
@@ -50,8 +47,12 @@ import { SearchBarComponent } from '../../../shared/components/search-bar/search
   }
   `
 })
-export class MovesListComponent extends BaseListComponent {
+export class MovesListComponent extends BaseListComponent<ApiSingleMoveResponse> {
   override itemType = signal<string>('move');
+
+  protected override changeBaseItemName(): void {
+    this.service.changeBaseItemName('move');
+  }
 
   nextMoves() {
     super.next();

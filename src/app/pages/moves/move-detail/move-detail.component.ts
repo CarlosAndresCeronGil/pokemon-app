@@ -5,12 +5,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
-import { createBasePaginationProvider } from '../../../shared/factories/providers.factory';
 
 @Component({
   selector: 'app-move-detail',
   imports: [MatButtonModule, MatCardModule],
-  providers: createBasePaginationProvider('move'),
   templateUrl: './move-detail.component.html',
   styles: `
     .card-container {

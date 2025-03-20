@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { BasePaginationServiceV2 } from '../../../../shared/services/base-pagination-v2.service';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-move-card',
@@ -53,7 +53,13 @@ export class MoveCardComponent {
   ngOnInit(): void {
     this.loadingData.set(true);
     this.fullMoveResponse = toSignal(
-      this.paginationService.getItemById(this.move().url).pipe(tap(() => this.loadingData.set(false))),
+      this.paginationService.getItemById(this.move().url).pipe(
+        tap(() => this.loadingData.set(false)),
+        catchError(() => {
+          this.loadingData.set(false);
+          return of(undefined);
+        })
+      ),
       {
         injector: this.injector,
       }

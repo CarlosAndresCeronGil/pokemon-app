@@ -1,13 +1,14 @@
 import { Component, DestroyRef, inject, Injector, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, tap } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { apiBaseShortResponse, apiSingleItemResponse } from '../../../models/Base/apiBaseResponse';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-base-list',
@@ -18,19 +19,20 @@ import { CommonModule } from '@angular/common';
     MatProgressSpinnerModule,
     FormsModule
   ],
-  templateUrl: './base-list.component.html',
+  template: ``,
   styleUrl: './base-list.component.scss',
 })
-export abstract class BaseListComponent {
+export abstract class BaseListComponent <ASIR extends apiSingleItemResponse> {
   searchTerm = signal<string>('');
   nextIsNull = signal<boolean>(false);
   previousIsNull = signal<boolean>(true);
 
-  protected service = inject(BasePaginationServiceV2);
+  protected service = inject(BasePaginationServiceV2<ASIR>) as BasePaginationServiceV2<ASIR>;
   protected destroyRef = inject(DestroyRef);
   protected injector = inject(Injector);
 
   abstract itemType: WritableSignal<string>;
+  protected abstract changeBaseItemName(): void;
 
   items = toSignal(
     this.service.items$.pipe(
@@ -49,12 +51,12 @@ export abstract class BaseListComponent {
     this.service.updateItemSearched(this.searchTerm());
     this.items = toSignal(
       this.service.itemSearched$.pipe(
-        map((response) => [
-          {
+        map((response) => {
+          return [{
             name: response.name,
             url: `${environment.baseUrlApi}/${this.itemType()}/${response.id}`,
-          },
-        ]),
+          }];
+        }),
         catchError(() => of([]))
       ),
       {

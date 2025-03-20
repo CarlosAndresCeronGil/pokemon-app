@@ -1,49 +1,66 @@
 @if (pokemonDetail()) {
-    <div class="card-container">
-        <mat-card appearance="outlined">
-            <mat-card-header>
-                <mat-card-title>#{{pokemonDetail()!.id}}</mat-card-title>
-                <mat-card-subtitle>{{pokemonDetail()!.name}}</mat-card-subtitle>
-            </mat-card-header>
-            <img mat-card-image [src]="pokemonDetail()!.sprites.front_default" alt="Photo of a {{ pokemonDetail()!.name }}">
-            <mat-card-content>
-                <p><strong>Height:</strong> {{pokemonDetail()!.height}}</p>
-                <p><strong>Weight:</strong> {{pokemonDetail()!.weight}}</p>
-                <p><strong>Base Experience:</strong> {{pokemonDetail()!.base_experience}}</p>
-                <p><strong>Abilities:</strong></p>
-                <ul>
-                    @for (ability of pokemonDetail()!.abilities; track $index) {
-                        <li>
-                            {{ability.ability.name}}
-                            @if(ability.is_hidden) {
-                                <span>(Hidden)</span>
-                            }
-                        </li>
-                    }
-                </ul>
-                <p><strong>Types:</strong></p>
-                <ul>
-                    @for (type of pokemonDetail()!.types; track $index) {
-                        <li>
-                            {{type.type.name}}
-                        </li>
-                    }
-                </ul>
-                <p><strong>Stats:</strong></p>
-                <ul>
-                    @for (stat of pokemonDetail()!.stats; track $index) {
-                        <li>
-                            {{stat.stat.name}}: {{stat.base_stat}}
-                        </li>
-                    }
-                </ul>
-            </mat-card-content>
-        </mat-card>
-    </div>
+<div class="card-container">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>#{{ pokemonDetail()!.id }}</mat-card-title>
+      <mat-card-subtitle>{{ pokemonDetail()!.name }}</mat-card-subtitle>
+      @if(pokemonDetail()?.sprites?.front_default) {
+      <img
+        mat-card-image
+        [ngSrc]="pokemonDetail()?.sprites?.front_default!"
+        priority
+        width="200"
+        height="200"
+        alt="Photo of {{ pokemonDetail()?.name }}"
+      />
+      } @else {
+      <img
+        ngSrc="assets/images/pokeball.png"
+        priority
+        width="200"
+        height="200"
+        alt="Photo of {{ pokemonDetail()?.name }}"
+      />
+      }
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Height:</strong> {{ pokemonDetail()!.height }}</p>
+      <p><strong>Weight:</strong> {{ pokemonDetail()!.weight }}</p>
+      <p>
+        <strong>Base Experience:</strong> {{ pokemonDetail()!.base_experience }}
+      </p>
+      <p><strong>Abilities:</strong></p>
+      <ul>
+        @for (ability of pokemonDetail()!.abilities; track $index) {
+        <li>
+          {{ ability.ability.name }}
+          @if(ability.is_hidden) {
+          <span>(Hidden)</span>
+          }
+        </li>
+        }
+      </ul>
+      <p><strong>Types:</strong></p>
+      <ul>
+        @for (type of pokemonDetail()!.types; track $index) {
+        <li>
+          {{ type.type.name }}
+        </li>
+        }
+      </ul>
+      <p><strong>Stats:</strong></p>
+      <ul>
+        @for (stat of pokemonDetail()!.stats; track $index) {
+        <li>{{ stat.stat.name }}: {{ stat.base_stat }}</li>
+        }
+      </ul>
+    </mat-card-content>
+  </mat-card>
+</div>
 } @else {
-    <mat-card appearance="outlined">
-        <mat-card-content>
-            <p>Select a Pokémon to see its details.</p>
-        </mat-card-content>
-    </mat-card>
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <p>Select a Pokémon to see its details.</p>
+  </mat-card-content>
+</mat-card>
 }
