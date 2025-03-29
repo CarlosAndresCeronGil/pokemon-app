@@ -8,7 +8,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { createBasePaginationProvider } from './shared/factories/providers.factory';
-import { PokemonService } from './services/pokemon/pokemon.service';
+import { PokemonImageOptionsService } from './services/pokemon/pokemonImageOptions.service'
 
 @Component({
   selector: 'app-root',
@@ -21,7 +21,7 @@ import { PokemonService } from './services/pokemon/pokemon.service';
   ],
   providers: [
     createBasePaginationProvider(),
-    PokemonService
+    PokemonImageOptionsService
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

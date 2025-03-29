@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ApiSinglePokemonResponse, Sprites } from '../../../models/Pokemon/apiSinglePokemonResponse';
-import { PokemonService } from '../../../services/pokemon/pokemon.service';
+import { PokemonImageOptionsService } from '../../../services/pokemon/pokemonImageOptions.service';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -51,7 +51,7 @@ import { PokemonService } from '../../../services/pokemon/pokemon.service';
   `,
 })
 export class PokemonListComponent extends BaseListComponent<ApiSinglePokemonResponse> {
-  public pokemonService = inject(PokemonService);
+  public pokemonService = inject(PokemonImageOptionsService);
   typeOfImagesOptions: any[] = this.pokemonService.POKEMON_IMAGES_OPTIONS;
 
   override itemType = signal<string>('pokemon');
@@ -60,8 +60,8 @@ export class PokemonListComponent extends BaseListComponent<ApiSinglePokemonResp
     this.service.changeBaseItemName('move');
   }
 
-  changeTypeOfImage(event: any): void {
-    this.pokemonService.currentPokemonImageOption.set(event);
+  changeTypeOfImage(optionKey: keyof Sprites): void {
+    this.pokemonService.setCurrentPokemonImageOption(optionKey);
   }
 
   nextPokemons(): void {

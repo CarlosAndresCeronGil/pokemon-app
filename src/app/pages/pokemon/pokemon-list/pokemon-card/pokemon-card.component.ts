@@ -17,7 +17,7 @@ import { ApiSinglePokemonResponse } from '../../../../models/Pokemon/apiSinglePo
 import { ApiPokemonShortResponse } from '../../../../models/Pokemon/apiPokemonsResponse';
 import { BasePaginationServiceV2 } from '../../../../shared/services/base-pagination-v2.service';
 import { NgOptimizedImage } from '@angular/common';
-import { PokemonService } from '../../../../services/pokemon/pokemon.service';
+import { PokemonImageOptionsService } from '../../../../services/pokemon/pokemonImageOptions.service';
 
 @Component({
   selector: 'app-pokemon-card',
@@ -30,25 +30,14 @@ import { PokemonService } from '../../../../services/pokemon/pokemon.service';
       <mat-card-header>
         <mat-card-title>{{ fullPokemonInfo()?.name }}</mat-card-title>
       </mat-card-header>
-      <!-- @if(fullPokemonInfo()?.sprites?.front_default) { -->
-      @if(hasCurrentSprite()) {
       <img
         mat-card-image
         [ngSrc]="getCurrentSprite()"
-        priority
+        [priority]="index() < 5"
         width="200"
         height="200"
         alt="Photo of {{ fullPokemonInfo()?.name }}"
       />
-      } @else {
-      <img
-        ngSrc="assets/images/pokeball.png"
-        priority
-        width="200"
-        height="200"
-        alt="Photo of {{ fullPokemonInfo()?.name }}"
-      />
-      }
       <mat-card-actions>
         <button mat-button (click)="handleSeeDetails()">DETAILS</button>
       </mat-card-actions>
@@ -72,11 +61,12 @@ import { PokemonService } from '../../../../services/pokemon/pokemon.service';
 })
 export class PokemonCardComponent implements OnInit {
   pokemon = input.required<ApiPokemonShortResponse>();
+  index = input.required<number>();
   fullPokemonInfo!: Signal<ApiSinglePokemonResponse | undefined>;
   loadingData = signal<boolean>(false);
 
   private paginationService = inject(BasePaginationServiceV2) as BasePaginationServiceV2<ApiSinglePokemonResponse>;
-  public pokemonService = inject(PokemonService);
+  public pokemonService = inject(PokemonImageOptionsService);
   route = inject(Router);
   injector = inject(Injector);
 
@@ -96,13 +86,8 @@ export class PokemonCardComponent implements OnInit {
     );
   }
 
-  hasCurrentSprite(): boolean {
-    const option = this.pokemonService.currentPokemonImageOption();
-    return !!(this.fullPokemonInfo()?.sprites)?.[option];
-  }
-
   getCurrentSprite(): string {
-    const option = this.pokemonService.currentPokemonImageOption();
+    const option = this.pokemonService.getCurrentPokemonImageOption();
     return (this.fullPokemonInfo()?.sprites)?.[option] || 'assets/images/pokeball.png';
   }
 

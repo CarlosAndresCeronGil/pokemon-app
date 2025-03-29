@@ -7,7 +7,7 @@ type PokemonImageOption = {
 }
 
 @Injectable()
-export class PokemonService {
+export class PokemonImageOptionsService {
 
     POKEMON_IMAGES_OPTIONS: PokemonImageOption[] = [
         { key: 'front_default', value: 'Front Default' },
@@ -20,6 +20,18 @@ export class PokemonService {
         { key: 'back_shiny_female', value: 'Back Shiny Female' },
     ];
 
-    currentPokemonImageOption = signal<keyof Sprites>(this.POKEMON_IMAGES_OPTIONS[0].key);
+    private _currentPokemonImageOption = signal<keyof Sprites>(this.POKEMON_IMAGES_OPTIONS[0].key);
+
+    getCurrentPokemonImageOption(): keyof Sprites {
+        return this._currentPokemonImageOption();
+    }
+
+    setCurrentPokemonImageOption(option: keyof Sprites): void {
+        if (this.POKEMON_IMAGES_OPTIONS.some(opt => opt.key === option)) {
+            this._currentPokemonImageOption.set(option);
+        } else {
+            console.error(`Invalid Pokemon image option: ${option}`);
+        }
+    }
 
 }

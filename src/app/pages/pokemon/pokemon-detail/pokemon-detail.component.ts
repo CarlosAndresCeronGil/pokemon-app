@@ -12,7 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiSinglePokemonResponse } from '../../../models/Pokemon/apiSinglePokemonResponse';
 import { environment } from '../../../../environments/environment';
 import { BasePaginationServiceV2 } from '../../../shared/services/base-pagination-v2.service';
-import { PokemonService } from '../../../services/pokemon/pokemon.service';
+import { PokemonImageOptionsService } from '../../../services/pokemon/pokemonImageOptions.service';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -49,7 +49,7 @@ export class PokemonDetailComponent implements OnInit {
   fullUrl!: string;
 
   basePaginationService = inject(BasePaginationServiceV2);
-  pokemonService = inject(PokemonService);
+  pokemonService = inject(PokemonImageOptionsService);
   injector = inject(Injector);
 
   pokemonDetail!: Signal<ApiSinglePokemonResponse | undefined>;

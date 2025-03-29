@@ -10,7 +10,7 @@
 <div class="pokemon-list-filter">
   <mat-form-field>
     <mat-label>Type of image</mat-label>
-    <mat-select [(value)]="pokemonService.currentPokemonImageOption" (valueChange)="changeTypeOfImage($event)">
+    <mat-select [value]="pokemonService.getCurrentPokemonImageOption()" (valueChange)="changeTypeOfImage($event)">
       @for (option of typeOfImagesOptions; track option.key) {
       <mat-option [value]="option.key">{{ option.value }}</mat-option>
       }
@@ -28,7 +28,7 @@
     <h2>No pokemons found</h2>
   </div>
   } @else { @for (pokemon of items(); track pokemon.name) {
-  <app-pokemon-card [pokemon]="pokemon"></app-pokemon-card>
+  <app-pokemon-card [pokemon]="pokemon" [index]="$index"></app-pokemon-card>
   } }
 </div>
 <div>
